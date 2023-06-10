@@ -6,6 +6,10 @@
 #include <unistd.h>
 #include <netdb.h> //for AF_INET
 
+//server 구조체 생성 => 소켓 생성, 구조체 0으로 채우기
+// => server bind() => listen(서버 구조체) 
+//=> accept(클라 구조체) => write()
+
 const char APRESSMESSAGE[]="APRESS - For Professionals, By Professionals.\n";
 int main(int argc, char* argv[]){
     int simpleSocket=0;
@@ -38,7 +42,7 @@ int main(int argc, char* argv[]){
 /*2.Bind to the address , IP */
     returnStatus=bind(simpleSocket, 
         (struct sockaddr *)&simpleServer, 
-        sizeof(simpleServer));
+        sizeof(simpleServer)); //소켓,서버 구조체,구조체 크기
 
     if (returnStatus==0){
         fprintf(stderr, "Bind completed!\n");
@@ -58,7 +62,7 @@ int main(int argc, char* argv[]){
     }
 
     while(1){
-        struct sockaddr_in clientName={0};
+        struct sockaddr_in clientName={0}; //클라이언트 구조체 생성, 0으로 채우기
         int simpleChildSocket=0;
         int clientNameLength=sizeof(simpleChildSocket);
 /*4.Wait here*/
@@ -66,7 +70,8 @@ int main(int argc, char* argv[]){
             simpleSocket, 
             (struct sockaddr*)&clientName,
             &clientNameLength
-        );
+        ); // 소켓, 클라구조체, 클라 주조체 주소값
+
         if(simpleChildSocket==-1){
             fprintf(stderr, "Cannot accept connections!\n");
             close(simpleSocket);
