@@ -10,6 +10,9 @@
 #include <netinet/in.h> 
 #define BUF_SIZE 256
 
+//서버 구조체 생성 => 소켓 생성 => 구조체 0으로
+//서버 구조체에 connect() => read() 
+
 int main(int argc, char *argv[]){
     int simpleSocket=0;
     int simplePort=0;
@@ -44,7 +47,7 @@ int main(int argc, char *argv[]){
 /*Connect to address, port*/
     returnStatus=connect(simpleSocket, 
         (struct sockaddr *)&simpleServer,
-        sizeof(simpleServer));
+        sizeof(simpleServer)); //소켓, 서버 구조체, 구조체 크기
     if (returnStatus==0){
         fprintf(stderr, "Connect successful!\n");
     }
@@ -56,6 +59,7 @@ int main(int argc, char *argv[]){
 
 /*Get the message from the server*/
     returnStatus=read(simpleSocket, buffer, sizeof(buffer));
+    //소켓, 버퍼, 버퍼 크기
     if(returnStatus>0){
         printf("%d: %s", returnStatus, buffer);
     }

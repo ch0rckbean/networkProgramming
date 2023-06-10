@@ -1,7 +1,6 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <stdlib.h>
-// #include <string.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <netdb.h>
@@ -16,6 +15,10 @@ int main(){
 	struct sockaddr_in xferServer, xferClient;
 	int returnStatus;
 
+//소켓1 생성 => server bind() => 소켓1 listen() =>
+//=> client accept() 하는 소켓2 (client size 주소값으로)
+//=> 소켓2가 받아온 filename read() =file open() => 소켓2로 write()
+
 /*Create a socket*/
 	sock1=socket(AF_INET, SOCK_STREAM,0);
 	if(sock1==-1){
@@ -28,7 +31,7 @@ int main(){
 	xferServer.sin_port=htons(SERVERPORT);
 
 	returnStatus=bind(sock1,(struct sockaddr*)&xferServer,
-						sizeof(xferServer));
+						sizeof(xferServer)); //소켓1, 구조체, 서버 크기
 	if(returnStatus==-1){
 		fprintf(stderr, "Could not bind to socket!\n");
 		exit(1);
@@ -39,6 +42,7 @@ int main(){
 		fprintf(stderr, "Could not listen on socket!\n");
 		exit(1);
 	}
+
 /*Connnection Queue*/
 	for(;;){
 		int fd;
@@ -50,6 +54,7 @@ int main(){
 		addrlen=sizeof(xferClient);
 /*accept*/
 	sock2=accept(sock1, (struct sockaddr*)&xferClient,&addrlen);
+	//소켓1, 구조체, 서버 크기 주소값
 	if (sock2 == -1){
 		fprintf(stderr, "Could not accept connection!\n");
 		exit(1);
@@ -66,6 +71,7 @@ int main(){
 	}
 	filename[i+1]='\0';
 	printf("Reading file %s\n",filename);
+
 /*open file for reading*/
 	fd=open(filename,O_RDONLY);
 	if(fd==-1){

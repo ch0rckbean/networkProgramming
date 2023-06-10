@@ -13,11 +13,15 @@
 #define SERVERPORT 8888
 #define MAXBUF 1024
 
+//소켓 생성 => server와 connect() =>write()
+//=> 소켓 shutdown() => file open() => read(), write()
+
+
 int main(int argc, char* argv[]){
 	int sockd;
 	int counter;
 	int fd;
-	struct sockaddr_in xferServer;
+	struct sockaddr_in xferServer; //client는 구조체 1개만!
 	char buf[MAXBUF];
 	int returnStatus;
 
@@ -25,6 +29,7 @@ int main(int argc, char* argv[]){
 		fprintf(stderr, "Usage: %s <ip address> <filename> [dest filename]\n", argv[0]);
 		exit(1);
 	}
+
 /*Create a socket*/
 	sockd=socket(AF_INET,SOCK_STREAM,0);
 	if(sockd==-1){
@@ -37,13 +42,13 @@ int main(int argc, char* argv[]){
 	xferServer.sin_port=htons(SERVERPORT);
 /*connect to the server*/
 	returnStatus=connect(sockd,(struct sockaddr*)&xferServer,
-						sizeof(xferServer));
+						sizeof(xferServer)); //소켓, 구조체, 구조체 크기
 	if (returnStatus == -1){
 		fprintf(stderr, "Could not connect to server!\n");
 		exit(1);
 	}
 /*send filename to server*/
-	returnStatus=write(sockd,argv[2],strlen(argv[2])+1);
+	returnStatus=write(sockd,argv[2],strlen(argv[2])+1); //소켓, 파일이름, 파일이름 크기 +1
 	if (returnStatus == -1){
 		fprintf(stderr, "Could send filename to server!\n");
 		exit(1);
